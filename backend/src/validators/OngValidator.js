@@ -7,9 +7,10 @@ module.exports = {
       email: Joi.string()
         .required()
         .email(),
-      whatsapp: Joi.number()
+      whatsapp: Joi.string()
         .min(10)
         .max(11)
+        .regex(new RegExp(/^[^a-zA-Z]$/))
         .required(),
       city: Joi.string().required(),
       uf: Joi.string()
