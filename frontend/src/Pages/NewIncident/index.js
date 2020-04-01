@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { FiArrowLeft } from "react-icons/fi";
+import { FiArrowLeft, FiHeart } from "react-icons/fi";
 
 import "./styles.css";
 import logoImg from "../../assets/logo.svg";
 import api from "../../services/api";
+import Modal from "../../Components/Modal";
 
 export default function NewIncident() {
   const [title, setTtile] = useState("");
   const [description, setDescription] = useState("");
   const [value, setValue] = useState("");
+  const [modal, setModal] = useState("none");
 
   const ongId = localStorage.getItem("ongId");
 
@@ -27,7 +29,10 @@ export default function NewIncident() {
         }
       });
 
-      history.push("/profile");
+      setModal("flex");
+      setTimeout(() => {
+        history.push("/profile");
+      }, 1200);
     } catch (err) {
       console.log(err);
 
@@ -37,6 +42,12 @@ export default function NewIncident() {
 
   return (
     <div className="new-incident-container">
+      <Modal visibility={modal}>
+        <p>Caso cadastrado com sucesso !</p>
+        <span>
+          <FiHeart size={32} />
+        </span>
+      </Modal>
       <div className="content">
         <section>
           <img src={logoImg} alt="Be The Hero" />
