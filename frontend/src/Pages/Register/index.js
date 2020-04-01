@@ -5,6 +5,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import "./styles.css";
 import logoImg from "../../assets/logo.svg";
 import api from "../../services/api";
+import Modal from "../../Components/Modal";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -12,6 +13,9 @@ export default function Register() {
   const [whatsapp, setWhatsapp] = useState("");
   const [city, setCity] = useState("");
   const [uf, setUf] = useState("");
+
+  const [modal, setModal] = useState("none");
+  const [id, setId] = useState("none");
 
   const history = useHistory();
 
@@ -23,15 +27,29 @@ export default function Register() {
     try {
       const response = await api.post("/ongs", data);
 
-      alert(`Seu ID de acesso: ${response.data.id}`);
-      history.push("/");
+      setId(response.data.id);
+      setModal("flex");
     } catch {
       alert("Erro no cadastro, tente novamente.");
     }
   }
 
+  function handleBackLogin() {
+    history.push("/");
+  }
+
   return (
     <div className="register-container">
+      <Modal visibility={modal}>
+        <p>Anote seu ID de cadastro:</p>
+        <p>
+          <span>{id}</span>
+        </p>
+        <button onClick={handleBackLogin} className="button">
+          Logar
+        </button>
+      </Modal>
+
       <div className="content">
         <section>
           <img src={logoImg} alt="Be The Hero" />
