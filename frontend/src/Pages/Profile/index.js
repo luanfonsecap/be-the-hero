@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { FiPower, FiTrash2 } from "react-icons/fi";
+import { FiPower, FiTrash2, FiX } from "react-icons/fi";
 
 import "./styles.css";
 import logoImg from "../../assets/logo.svg";
 import api from "../../services/api";
+import Modal from "../../Components/Modal";
 
 export default function Profile() {
   const [incidents, setIncidents] = useState([]);
+  const [modal, setModal] = useState("none");
+  const [deleting, setDeleting] = useState([]);
 
   const history = useHistory();
 
@@ -24,15 +27,22 @@ export default function Profile() {
       .then(resposne => setIncidents(resposne.data));
   }, [ongId]);
 
-  async function handleDeleteIncident(id) {
+  function handleDeleteIncident(id, title) {
+    setDeleting([id, title]);
+
+    setModal("flex");
+  }
+
+  async function deleteIncident() {
     try {
-      await api.delete(`/incidents/${id}`, {
+      await api.delete(`/incidents/${deleting[0]}`, {
         headers: {
           Authorization: ongId
         }
       });
 
-      setIncidents(incidents.filter(incident => incident.id !== id));
+      setIncidents(incidents.filter(incident => incident.id !== deleting[0]));
+      setModal("none");
     } catch (err) {
       alert("Erro ao deletar caso, tente novamente");
     }
@@ -58,8 +68,21 @@ export default function Profile() {
       </header>
 
       <h1>Casos cadastrados</h1>
+      <Modal visibility={modal}>
+        <p>Deseja realmente excluir este caso ?</p>
+        <span>{deleting[1]}</span>
+        <button onClick={deleteIncident} className="button">
+          SIM
+        </button>
+        <button onClick={() => setModal("none")}>
+          <FiX size={18} color="#e02041" />
+        </button>
+      </Modal>
 
       <ul>
+        {incidents.length === 0 && (
+          <p className="no-cases">Não há casos cadastrados para sua ONG.</p>
+        )}
         {incidents.map(incident => (
           <li key={incident.id}>
             <strong>CASO:</strong>
@@ -77,7 +100,7 @@ export default function Profile() {
             </p>
 
             <button
-              onClick={() => handleDeleteIncident(incident.id)}
+              onClick={() => handleDeleteIncident(incident.id, incident.title)}
               type="button"
             >
               <FiTrash2 size={20} color="#a8a8b3" />
