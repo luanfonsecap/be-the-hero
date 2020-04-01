@@ -15,7 +15,7 @@ export default function Register() {
   const [uf, setUf] = useState("");
 
   const [modal, setModal] = useState("none");
-  const [id, setId] = useState("none");
+  const [id, setId] = useState("");
 
   const history = useHistory();
 
