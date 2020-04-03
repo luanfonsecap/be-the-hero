@@ -52,6 +52,11 @@ routes.delete(
   IncidentController.delete
 );
 
-routes.put("/incidents/:id", authMiddleware, IncidentController.update);
+routes.put(
+  "/incidents/:id",
+  authMiddleware,
+  celebrate(IncidentValidator.update),
+  IncidentController.update
+);
 
 module.exports = routes;
