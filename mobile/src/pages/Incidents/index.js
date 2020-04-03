@@ -25,15 +25,16 @@ export default function Incidents() {
     }
 
     if (total > 0 && incidents.length === total) {
+      return;
     }
 
     setLoading(true);
 
     const response = await api.get("/incidents", {
-      params: { page }
+      params: { page },
     });
 
-    setIncidents([...incidents, ...response.data]);
+    setIncidents([...incidents, ...response.data.incidents]);
     setTotal(response.headers["x-total-count"]);
     setPage(page + 1);
     setLoading(false);
@@ -60,7 +61,7 @@ export default function Incidents() {
       <FlatList
         data={incidents}
         style={styles.incidentList}
-        keyExtractor={incident => String(incident.id)}
+        keyExtractor={(incident) => String(incident.id)}
         showsVerticalScrollIndicator={false}
         onEndReached={loadIncidents}
         onEndReachedThreshold={0.2}
@@ -76,7 +77,7 @@ export default function Incidents() {
             <Text style={styles.incidentValue}>
               {Intl.NumberFormat("pt-BR", {
                 style: "currency",
-                currency: "BRL"
+                currency: "BRL",
               }).format(incident.value)}
             </Text>
 
