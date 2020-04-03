@@ -47,4 +47,9 @@ routes.delete(
   IncidentController.delete
 );
 
+routes.put(
+  "/incidents/:id",
+  IncidentController.update
+);
+
 module.exports = routes;

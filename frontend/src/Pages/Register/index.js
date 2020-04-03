@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
+import { confirmAlert } from "react-confirm-alert";
 
 import "./styles.css";
 import logoImg from "../../assets/logo.svg";
@@ -14,9 +15,6 @@ export default function Register() {
   const [city, setCity] = useState("");
   const [uf, setUf] = useState("");
 
-  const [modal, setModal] = useState("none");
-  const [id, setId] = useState("");
-
   const history = useHistory();
 
   async function handleRegister(e) {
@@ -27,29 +25,31 @@ export default function Register() {
     try {
       const response = await api.post("/ongs", data);
 
-      setId(response.data.id);
-      setModal("flex");
+      confirmAlert({
+        customUI: ({ onClose }) => (
+          <Modal>
+            <p>Anote seu ID de cadastro:</p>
+            <p>
+              <span>{response.data.id}</span>
+            </p>
+            <button onClick={() => handleBackLogin(onClose)} className="button">
+              Logar
+            </button>
+          </Modal>
+        ),
+      });
     } catch {
       alert("Erro no cadastro, tente novamente.");
     }
   }
 
-  function handleBackLogin() {
+  function handleBackLogin(cb) {
+    cb();
     history.push("/");
   }
 
   return (
     <div className="register-container">
-      <Modal visibility={modal}>
-        <p>Anote seu ID de cadastro:</p>
-        <p>
-          <span>{id}</span>
-        </p>
-        <button onClick={handleBackLogin} className="button">
-          Logar
-        </button>
-      </Modal>
-
       <div className="content">
         <section>
           <img src={logoImg} alt="Be The Hero" />
@@ -69,31 +69,31 @@ export default function Register() {
           <input
             placeholder="Nome da ONG"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
           />
           <input
             type="email"
             value={email}
             placeholder="Email"
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
             placeholder="WhatsApp"
             value={whatsapp}
-            onChange={e => setWhatsapp(e.target.value)}
+            onChange={(e) => setWhatsapp(e.target.value)}
           />
 
           <div className="input-group">
             <input
               placeholder="Cidade"
               value={city}
-              onChange={e => setCity(e.target.value)}
+              onChange={(e) => setCity(e.target.value)}
             />
             <input
               placeholder="UF"
               style={{ width: 80 }}
               value={uf}
-              onChange={e => setUf(e.target.value)}
+              onChange={(e) => setUf(e.target.value)}
             />
           </div>
 

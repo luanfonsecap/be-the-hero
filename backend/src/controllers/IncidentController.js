@@ -56,5 +56,25 @@ module.exports = {
       .delete();
 
     return res.status(204).send();
+  },
+
+  async update(req, res) {
+    const { id } = req.params;
+    const ong_id = req.headers.authorization;
+    const { title, description, value } = req.body;
+
+    if (!ong_id) {
+      return res.status(401).json({ error: "Operation not permitted." });
+    }
+
+    const incident = await connection("incidents")
+      .where({ id, ong_id })
+      .update({
+        title,
+        description,
+        value
+      })
+
+    return res.json(incident);
   }
 };
