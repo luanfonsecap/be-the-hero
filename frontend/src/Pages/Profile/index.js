@@ -13,107 +13,107 @@ import Modal from "../../Components/Modal";
 import animationData from "../../assets/empty.json";
 
 export default function Profile() {
-  const [incidents, setIncidents] = useState([]);
+	const [incidents, setIncidents] = useState([]);
 
-  const history = useHistory();
+	const history = useHistory();
 
-  const ongName = localStorage.getItem("ongName");
-  const ongId = localStorage.getItem("ongId");
+	const ongName = localStorage.getItem("ongName");
+	const token = localStorage.getItem("token");
 
-  const animationOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
+	const animationOptions = {
+		loop: true,
+		autoplay: true,
+		animationData: animationData,
+		rendererSettings: {
+			preserveAspectRatio: "xMidYMid slice",
+		},
+	};
 
-  useEffect(() => {
-    api
-      .get("/profile", {
-        headers: {
-          Authorization: ongId,
-        },
-      })
-      .then((resposne) => setIncidents(resposne.data));
-  }, [ongId]);
+	useEffect(() => {
+		api
+			.get("/profile", {
+				headers: {
+					Authorization: token,
+				},
+			})
+			.then((resposne) => setIncidents(resposne.data));
+	}, [token]);
 
-  async function handleDeleteIncident(id, name) {
-    confirmAlert({
-      customUI: ({ onClose }) => (
-        <Modal>
-          <h2>Tem certeza?</h2>
-          <p>
-            Deletar o caso <span>{name}</span>
-          </p>
-          <button
-            className="button"
-            onClick={async () => {
-              try {
-                await api.delete(`/incidents/${id}`, {
-                  headers: {
-                    Authorization: ongId,
-                  },
-                });
+	async function handleDeleteIncident(id, name) {
+		confirmAlert({
+			customUI: ({ onClose }) => (
+				<Modal>
+					<h2>Tem certeza?</h2>
+					<p>
+						Deletar o caso <span>{name}</span>
+					</p>
+					<button
+						className="button"
+						onClick={async () => {
+							try {
+								await api.delete(`/incidents/${id}`, {
+									headers: {
+										Authorization: token,
+									},
+								});
 
-                setIncidents(
-                  incidents.filter((incident) => incident.id !== id)
-                );
-                onClose();
-              } catch (err) {
-                alert("Erro ao deletar caso, tente novamente");
-              }
-            }}
-          >
-            Sim
-          </button>
-          <div>
-            <button className="button" onClick={onClose}>
-              Não
-            </button>
-          </div>
-        </Modal>
-      ),
-    });
-  }
+								setIncidents(
+									incidents.filter((incident) => incident.id !== id)
+								);
+								onClose();
+							} catch (err) {
+								alert("Erro ao deletar caso, tente novamente");
+							}
+						}}
+					>
+						Sim
+					</button>
+					<div>
+						<button className="button" onClick={onClose}>
+							Não
+						</button>
+					</div>
+				</Modal>
+			),
+		});
+	}
 
-  function handleLogout() {
-    localStorage.clear();
-    history.push("/");
-  }
+	function handleLogout() {
+		localStorage.clear();
+		history.push("/");
+	}
 
-  return (
-    <div className="profile-container">
-      <header>
-        <img src={logoImg} alt="Be The Hero" />
-        <span>Bem vinda, {ongName}</span>
+	return (
+		<div className="profile-container">
+			<header>
+				<img src={logoImg} alt="Be The Hero" />
+				<span>Bem vinda, {ongName}</span>
 
-        <Link className="button" to="/incidents/new">
-          Cadastrar novo caso
-        </Link>
-        <button onClick={handleLogout} type="button">
-          <FiPower size={18} color="#e02041" />
-        </button>
-      </header>
+				<Link className="button" to="/incidents/new">
+					Cadastrar novo caso
+				</Link>
+				<button onClick={handleLogout} type="button">
+					<FiPower size={18} color="#e02041" />
+				</button>
+			</header>
 
-      <h1>Casos cadastrados</h1>
+			<h1>Casos cadastrados</h1>
 
-      <ul>
-        {incidents.length === 0 && (
-          <div className="no-cases">
-            <p>Não há casos cadastrados para sua ONG.</p>
-            <Lottie options={animationOptions} />
-          </div>
-        )}
-        {incidents.map((incident) => (
-          <Incident
-            incident={incident}
-            key={incident.id}
-            callback={handleDeleteIncident}
-          />
-        ))}
-      </ul>
-    </div>
-  );
+			<ul>
+				{incidents.length === 0 && (
+					<div className="no-cases">
+						<p>Não há casos cadastrados para sua ONG.</p>
+						<Lottie options={animationOptions} />
+					</div>
+				)}
+				{incidents.map((incident) => (
+					<Incident
+						incident={incident}
+						key={incident.id}
+						callback={handleDeleteIncident}
+					/>
+				))}
+			</ul>
+		</div>
+	);
 }
