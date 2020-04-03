@@ -50,3 +50,12 @@
   grid-gap: 24px;
   list-style: none;
 }
+
+.no-cases {
+  text-align: center;
+}
+
+.no-cases p {
+  color: #e02140;
+  font-size: 24px;
+}

@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { FiArrowLeft, FiHeart } from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi";
 import { confirmAlert } from "react-confirm-alert";
-import Modal from "../../Components/Modal";
+import Lottie from "react-lottie";
 
 import "./styles.css";
 import logoImg from "../../assets/logo.svg";
 import api from "../../services/api";
+import Modal from "../../Components/Modal";
+import animationData from "../../assets/checked.json";
 
 export default function NewIncident() {
   const [title, setTtile] = useState("");
@@ -29,17 +31,26 @@ export default function NewIncident() {
         },
       });
 
+      const animationOptions = {
+        loop: false,
+        autoplay: true,
+        animationData: animationData,
+        rendererSettings: {
+          preserveAspectRatio: "xMidYMid slice",
+        },
+      };
+
       confirmAlert({
         customUI: ({ onClose }) => {
           setTimeout(() => {
             onClose();
             history.push("/profile");
-          }, 1200);
+          }, 1300);
           return (
             <Modal>
               <p>Caso criado com sucesso!</p>
               <span>
-                <FiHeart size={26} />
+                <Lottie options={animationOptions} />
               </span>
             </Modal>
           );

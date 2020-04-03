@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { FiPower } from "react-icons/fi";
 import { confirmAlert } from "react-confirm-alert";
+import Lottie from "react-lottie";
 
 import "./styles.css";
 import "../../Components/Modal/styles.css";
@@ -9,6 +10,7 @@ import logoImg from "../../assets/logo.svg";
 import api from "../../services/api";
 import Incident from "../../Components/Incident";
 import Modal from "../../Components/Modal";
+import animationData from "../../assets/empty.json";
 
 export default function Profile() {
   const [incidents, setIncidents] = useState([]);
@@ -17,6 +19,15 @@ export default function Profile() {
 
   const ongName = localStorage.getItem("ongName");
   const ongId = localStorage.getItem("ongId");
+
+  const animationOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   useEffect(() => {
     api
@@ -90,7 +101,10 @@ export default function Profile() {
 
       <ul>
         {incidents.length === 0 && (
-          <p className="no-cases">Não há casos cadastrados para sua ONG.</p>
+          <div className="no-cases">
+            <p>Não há casos cadastrados para sua ONG.</p>
+            <Lottie options={animationOptions} />
+          </div>
         )}
         {incidents.map((incident) => (
           <Incident
