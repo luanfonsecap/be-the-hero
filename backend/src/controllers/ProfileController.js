@@ -2,7 +2,7 @@ const connection = require("../database/connection");
 
 module.exports = {
   async index(req, res) {
-    const ong_id = req.headers.authorization;
+    const ong_id = req.userId;
 
     if (!ong_id) {
       return res.status("401").json({ error: "Operation not permitted." });
@@ -22,5 +22,5 @@ module.exports = {
       .select("*");
 
     return res.json(incidents);
-  }
+  },
 };

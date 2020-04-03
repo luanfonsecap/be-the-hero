@@ -11,6 +11,8 @@ const ProfileValidator = require("./validators/ProfileValidator");
 const OngValidator = require("./validators/OngValidator");
 const IncidentValidator = require("./validators/IncidentValidator");
 
+const authMiddleware = require("./middlewares/auth");
+
 const routes = express.Router();
 
 routes.post(
@@ -25,6 +27,7 @@ routes.post("/ongs", celebrate(OngValidator.create), OngController.create);
 
 routes.get(
   "/profile",
+  authMiddleware,
   celebrate(ProfileValidator.index),
   ProfileController.index
 );
@@ -37,19 +40,18 @@ routes.get(
 
 routes.post(
   "/incidents",
+  authMiddleware,
   celebrate(IncidentValidator.create),
   IncidentController.create
 );
 
 routes.delete(
   "/incidents/:id",
+  authMiddleware,
   celebrate(IncidentValidator.delete),
   IncidentController.delete
 );
 
-routes.put(
-  "/incidents/:id",
-  IncidentController.update
-);
+routes.put("/incidents/:id", authMiddleware, IncidentController.update);
 
 module.exports = routes;

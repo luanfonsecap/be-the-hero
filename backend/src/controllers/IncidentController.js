@@ -16,7 +16,7 @@ module.exports = {
         "ongs.email",
         "ongs.whatsapp",
         "ongs.city",
-        "ongs.uf"
+        "ongs.uf",
       ]);
 
     res.header("X-Total-Count", count["count(*)"]);
@@ -26,13 +26,13 @@ module.exports = {
 
   async create(req, res) {
     const { title, description, value } = req.body;
-    const ong_id = req.headers.authorization;
+    const ong_id = req.userId;
 
     const [id] = await connection("incidents").insert({
       title,
       description,
       value,
-      ong_id
+      ong_id,
     });
 
     return res.json({ id });
@@ -40,7 +40,7 @@ module.exports = {
 
   async delete(req, res) {
     const { id } = req.params;
-    const ong_id = req.headers.authorization;
+    const ong_id = req.userId;
 
     const incident = await connection("incidents")
       .where("id", id)
@@ -51,16 +51,14 @@ module.exports = {
       return res.status(401).json({ error: "Operation not permitted." });
     }
 
-    await connection("incidents")
-      .where("id", id)
-      .delete();
+    await connection("incidents").where("id", id).delete();
 
     return res.status(204).send();
   },
 
   async update(req, res) {
     const { id } = req.params;
-    const ong_id = req.headers.authorization;
+    const ong_id = req.userId;
     const { title, description, value } = req.body;
 
     if (!ong_id) {
@@ -72,9 +70,9 @@ module.exports = {
       .update({
         title,
         description,
-        value
-      })
+        value,
+      });
 
     return res.json(incident);
-  }
+  },
 };
