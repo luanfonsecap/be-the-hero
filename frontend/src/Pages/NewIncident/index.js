@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import { confirmAlert } from "react-confirm-alert";
+import { Form } from "@unform/web";
+import Input from "../../Components/Form/Input";
+import Textarea from "../../Components/Form/Textarea";
+import * as Yup from "yup";
 import Lottie from "react-lottie";
 
 import "./styles.css";
@@ -11,20 +15,29 @@ import Modal from "../../Components/Modal";
 import animationData from "../../assets/checked.json";
 
 export default function NewIncident() {
-	const [title, setTtile] = useState("");
-	const [description, setDescription] = useState("");
-	const [value, setValue] = useState("");
-
 	const token = localStorage.getItem("token");
+	const formRef = useRef(null);
 
 	const history = useHistory();
 
-	async function handleNewIncident(e) {
-		e.preventDefault();
-
-		const data = { title, description, value };
-
+	async function handleNewIncident(data) {
 		try {
+			const schema = Yup.object().shape({
+				title: Yup.string()
+					.required("Título é obrigatório")
+					.min(5, "No mínimo 5 caracteres"),
+				description: Yup.string()
+					.required("Descrição é obrigatório")
+					.min(15, "No mínimo 15 caracteres"),
+				value: Yup.number()
+					.required("Valor é obrigatório")
+					.typeError("Digite um valor"),
+			});
+
+			await schema.validate(data, {
+				abortEarly: false,
+			});
+
 			await api.post("/incidents", data, {
 				headers: {
 					Authorization: token,
@@ -57,9 +70,15 @@ export default function NewIncident() {
 				},
 			});
 		} catch (err) {
-			console.log(err);
-
-			alert("Erro ao cadastrar caso, tente novamente");
+			const validationErrors = {};
+			if (err instanceof Yup.ValidationError) {
+				err.inner.forEach((error) => {
+					validationErrors[error.path] = error.message;
+				});
+				formRef.current.setErrors(validationErrors);
+			} else {
+				alert("Erro ao cadastrar caso, tente novamente");
+			}
 		}
 	}
 
@@ -80,28 +99,16 @@ export default function NewIncident() {
 					</Link>
 				</section>
 
-				<form onSubmit={handleNewIncident}>
-					<input
-						placeholder="Título do caso"
-						value={title}
-						onChange={(e) => setTtile(e.target.value)}
-					/>
-					<textarea
-						placeholder="Descrição"
-						value={description}
-						onChange={(e) => setDescription(e.target.value)}
-					/>
+				<Form ref={formRef} onSubmit={handleNewIncident}>
+					<Input name="title" placeholder="Título do caso" />
+					<Textarea name="description" placeholder="Descrição" />
 
-					<input
-						placeholder="Valor em reais"
-						value={value}
-						onChange={(e) => setValue(e.target.value)}
-					/>
+					<Input name="value" type="number" placeholder="Valor em reais" />
 
 					<button className="button" type="submit">
 						Cadastrar
 					</button>
-				</form>
+				</Form>
 			</div>
 		</div>
 	);
