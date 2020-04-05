@@ -24,6 +24,17 @@ module.exports = {
     return res.json({ incidents });
   },
 
+  async search(req, res) {
+    const { id } = req.params;
+
+    const incident = await connection("incidents")
+      .where({ id })
+      .select(["title", "description", "value"])
+      .first();
+
+    return res.json(incident);
+  },
+
   async create(req, res) {
     const { title, description, value } = req.body;
     const ong_id = req.userId;
@@ -59,7 +70,7 @@ module.exports = {
   async update(req, res) {
     const { id } = req.params;
     const ong_id = req.userId;
-    const { title, description, value } = req.body;
+    const { description, value } = req.body;
 
     if (!ong_id) {
       return res.status(401).json({ error: "Operation not permitted." });
@@ -68,7 +79,6 @@ module.exports = {
     const incident = await connection("incidents")
       .where({ id, ong_id })
       .update({
-        title,
         description,
         value,
       });

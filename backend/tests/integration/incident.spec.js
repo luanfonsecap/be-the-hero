@@ -19,15 +19,13 @@ describe("Incident", () => {
   });
 
   it("should be able to create a new Incident", async () => {
-    const newOng = await request(app)
-      .post("/ongs")
-      .send({
-        name: "ONG",
-        email: "ong@contact.com",
-        whatsapp: "31000000000",
-        city: "Belo Horizonte",
-        uf: "MG"
-      });
+    const newOng = await request(app).post("/ongs").send({
+      name: "ONG",
+      email: "ong@contact.com",
+      whatsapp: "31000000000",
+      city: "Belo Horizonte",
+      uf: "MG",
+    });
 
     const ongId = newOng.body.id;
 
@@ -37,22 +35,20 @@ describe("Incident", () => {
       .send({
         title: "Incident Test",
         description: "Description of a incident test",
-        value: 100
+        value: 100,
       });
 
     expect(response.body).toHaveProperty("id");
   });
 
   it("should be able to delete an incident", async () => {
-    const newOng = await request(app)
-      .post("/ongs")
-      .send({
-        name: "ONG",
-        email: "ong@contact.com",
-        whatsapp: "31000000000",
-        city: "Belo Horizonte",
-        uf: "MG"
-      });
+    const newOng = await request(app).post("/ongs").send({
+      name: "ONG",
+      email: "ong@contact.com",
+      whatsapp: "31000000000",
+      city: "Belo Horizonte",
+      uf: "MG",
+    });
 
     const ongId = newOng.body.id;
 
@@ -62,7 +58,7 @@ describe("Incident", () => {
       .send({
         title: "Incident Test",
         description: "Description of a incident test",
-        value: 100
+        value: 100,
       });
 
     const incidentId = newIncident.body.id;
@@ -74,16 +70,14 @@ describe("Incident", () => {
     expect(response.status).toBe(204);
   });
 
-  it('should be able to update an incident', async () => {
-    const newOng = await request(app)
-      .post("/ongs")
-      .send({
-        name: "ONG",
-        email: "ong@contact.com",
-        whatsapp: "31000000000",
-        city: "Belo Horizonte",
-        uf: "MG"
-      });
+  it("should be able to update an incident", async () => {
+    const newOng = await request(app).post("/ongs").send({
+      name: "ONG",
+      email: "ong@contact.com",
+      whatsapp: "31000000000",
+      city: "Belo Horizonte",
+      uf: "MG",
+    });
 
     const ongId = newOng.body.id;
 
@@ -93,7 +87,7 @@ describe("Incident", () => {
       .send({
         title: "Incident Test",
         description: "Description of a incident test",
-        value: 100
+        value: 100,
       });
 
     const incidentId = newIncident.body.id;
@@ -102,9 +96,36 @@ describe("Incident", () => {
       .put(`/incidents/${incidentId}`)
       .set("authorization", String.toString(ongId))
       .send({
-        value: "300"
+        value: "300",
       });
 
-    expect(response.body).toBe(1)
-  })
+    expect(response.body).toBe(1);
+  });
+
+  it("shoud be able to search an incident", async () => {
+    const newOng = await request(app).post("/ongs").send({
+      name: "ONG",
+      email: "ong@contact.com",
+      whatsapp: "31000000000",
+      city: "Belo Horizonte",
+      uf: "MG",
+    });
+
+    const ongId = newOng.body.id;
+
+    const newIncident = await request(app)
+      .post("/incidents")
+      .set("authorization", String.toString(ongId))
+      .send({
+        title: "Incident Test",
+        description: "Description of a incident test",
+        value: 100,
+      });
+
+    const incidentId = newIncident.body.id;
+
+    const response = await request(app).get(`/incidents/search/${incidentId}`);
+
+    expect(response.body).toHaveProperty(["title", "description", "value"]);
+  });
 });

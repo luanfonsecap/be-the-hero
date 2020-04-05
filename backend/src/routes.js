@@ -38,6 +38,12 @@ routes.get(
   IncidentController.index
 );
 
+routes.get(
+  "/incidents/search/:id",
+  celebrate(IncidentValidator.search),
+  IncidentController.search
+);
+
 routes.post(
   "/incidents",
   authMiddleware,

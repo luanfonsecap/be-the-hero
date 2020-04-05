@@ -32,4 +32,10 @@ module.exports = {
       id: Joi.number().required(),
     }),
   },
+
+  search: {
+    [Segments.PARAMS]: Joi.object().keys({
+      id: Joi.number().required(),
+    }),
+  },
 };
