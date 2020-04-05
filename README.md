@@ -6,13 +6,22 @@
 ---
 :sparkles: Projeto desenvolvido durante a semana Omnistack 11 da [Rocketseat](https://github.com/Rocketseat). 
 
-:fire: Algumas funcionalidades a mais adicionadas.
-
 # :muscle: O Projeto
 
 **Be The Hero** é uma aplicação para ajudar ONG's a conseguirem financiamento através de doações por qualquer pessoa que pode se tornar o héroi da instituição.
 
 Você pode testar a versão web do projeto que está hospeda no heroku, clicando [aqui](https://luanfonsecap-be-the-hero.herokuapp.com).
+
+## :fire: Funcionalidades adicionadas
+
+ - Testes no backend com Jest
+ - Busca de caso por ID
+ - Validação das requisições 
+ - Autenticação JWT
+ - Edição de casos
+ - Confirmação de exclusão do caso
+ - Lottie
+ - Unform
 
 ## :rocket: Tecnologias Utilizadas
 
