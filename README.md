@@ -10,7 +10,7 @@
 
 **Be The Hero** é uma aplicação para ajudar ONG's a conseguirem financiamento através de doações por qualquer pessoa que pode se tornar o herói da instituição.
 
-Você pode testar a versão web do projeto que está hospeda no heroku, clicando [aqui](https://luanfonsecap-be-the-hero.netlify.app/).
+Você pode testar a versão web do projeto, clicando [aqui](https://luanfonsecap-be-the-hero.netlify.app/).
 
 ## :fire: Funcionalidades adicionadas
 
